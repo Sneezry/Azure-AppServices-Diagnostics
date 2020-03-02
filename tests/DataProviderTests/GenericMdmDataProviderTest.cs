@@ -71,7 +71,7 @@ public static class MDMConfiguration
     public static GenericMdmDataProviderConfiguration GetConfiguration() =>
         new GenericMdmDataProviderConfiguration()
         {
-            CertificateName = ""antares.mdm.registration.azurewebsites.windows.net"",
+            CertificateName = ""mock.azurewebsites.windows.net"",
             Endpoint = ""http://0.0.0.0"",
             MonitoringAccount = ""Mock""
         };
