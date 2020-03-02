@@ -38,7 +38,7 @@ namespace Diagnostics.DataProviders
                         throw new NotSupportedException($"{ds} is not supported.");
                 }
             };
-            MdmGeneric = (GenericMdmDataProviderConfiguration config) => new MdmLogDecorator(context, new MdmDataProvider(_cache, new GenericMdmDataProviderConfigurationWapper(config), context.RequestId, context.receivedHeaders));
+            MdmGeneric = (GenericMdmDataProviderConfiguration config) => new MdmLogDecorator(context, new MdmDataProvider(_cache, new GenericMdmDataProviderConfigurationWrapper(config), context.RequestId, context.receivedHeaders));
         }
     }
 }

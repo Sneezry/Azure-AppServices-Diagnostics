@@ -36,7 +36,7 @@ namespace Diagnostics.DataProviders.DataProviderConfigurations
         }
     }
 
-    public class GenericMdmDataProviderConfigurationWapper: IDataProviderConfiguration, IMdmDataProviderConfiguration
+    public class GenericMdmDataProviderConfigurationWrapper: IDataProviderConfiguration, IMdmDataProviderConfiguration
     {
         /// <summary>
         /// Gets or sets the base endpoint.
@@ -60,7 +60,7 @@ namespace Diagnostics.DataProviders.DataProviderConfigurations
         {
         }
 
-        public GenericMdmDataProviderConfigurationWapper(GenericMdmDataProviderConfiguration config)
+        public GenericMdmDataProviderConfigurationWrapper(GenericMdmDataProviderConfiguration config)
         {
             if (config == null)
             {
@@ -72,24 +72,23 @@ namespace Diagnostics.DataProviders.DataProviderConfigurations
             }
             else
             {
-                X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadOnly);
-                X509Store userStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-                userStore.Open(OpenFlags.ReadOnly);
-
-                var certificateCollection = store.Certificates;
-                certificateCollection.AddRange(userStore.Certificates);
-                var certificates = certificateCollection.Find(X509FindType.FindBySubjectName, config.CertificateName, true);
-
-                if (certificates.Count == 0)
+                using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
+                using (X509Store userStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
                 {
-                    throw new SystemException("Certificate is not found.");
+                    store.Open(OpenFlags.ReadOnly);
+                    userStore.Open(OpenFlags.ReadOnly);
+
+                    var certificateCollection = store.Certificates;
+                    certificateCollection.AddRange(userStore.Certificates);
+                    var certificates = certificateCollection.Find(X509FindType.FindBySubjectName, config.CertificateName, true);
+
+                    if (certificates.Count == 0)
+                    {
+                        throw new SystemException("Certificate is not found.");
+                    }
+
+                    CertificateThumbprint = certificates[0].Thumbprint;
                 }
-
-                CertificateThumbprint = certificates[0].Thumbprint;
-
-                store.Dispose();
-                userStore.Dispose();
             }
 
             Endpoint = config.Endpoint;
